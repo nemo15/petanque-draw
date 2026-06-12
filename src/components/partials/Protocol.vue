@@ -577,6 +577,14 @@ export default {
     padding: 1.5rem;
     border-radius: 8px;
     margin-top: 1rem;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 900px) {
+    .protocol-container {
+        padding: 1rem 0.5rem;
+    }
 }
 
 .protocol-gate {
@@ -844,7 +852,7 @@ export default {
     color: #000;
     font-family: 'Times New Roman';
     width: 210mm;
-    max-width: 100%;
+    min-width: 210mm;
     margin: 0 auto;
     counter-reset: protocol-page 1;
 }
