@@ -88,12 +88,12 @@
               </div>
               <div class="active-overlay__item-meta">
                 <span v-if="item.teams">{{ item.teams.length }} {{ $t('common.teamsCount') }}</span>
-                <span v-if="getTeamFormat(item)">{{ getTeamFormat(item) }}</span>
+                <span v-if="getTeamFormat(item)" class="active-overlay__item-format">{{ getTeamFormat(item) }}</span>
                 <span v-if="item.tournamentIsFinished" class="active-overlay__item-finished">{{
                   $t('common.finished')
                 }}</span>
                 <span v-else-if="item.playOff">{{ $t('games.playOff') }}</span>
-                <span v-else-if="item.games">{{ item.games.length }} {{ $t('common.round') }}</span>
+                <span v-else-if="item.games && item.system !== 'tir'">{{ getRoundLabel(item) }}</span>
               </div>
             </div>
           </div>
@@ -278,6 +278,14 @@ export default {
       if (players.length === 2) return this.$t('common.formatDoublette');
       if (players.length >= 3) return this.$t('common.formatTriplette');
       return '';
+    },
+    getRoundLabel(item) {
+      const current = item.games.length;
+      if (item.system === 'swiss') {
+        const total = item.preferences?.swissRoundsCount || Math.ceil(Math.log2(item.teams?.length || 2));
+        return `${current}/${total} ${this.$t('common.round')}`;
+      }
+      return `${current} ${this.$t('common.round')}`;
     },
     addNewTournament() {
       this.addTournament();
@@ -538,6 +546,10 @@ export default {
   margin-top: 0.35rem;
   font-size: 0.8rem;
   color: var(--color-text-muted);
+}
+
+.active-overlay__item-format {
+  color: var(--color-primary);
 }
 
 .active-overlay__item--finished {
