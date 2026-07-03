@@ -118,42 +118,11 @@ export function getR2QualifiersWithTies(participants, tiebreakerCount, directCou
   const baseQualifiers = ranked.slice(directCount, r2EndPosition);
   const lastQualifier = ranked[r2EndPosition - 1];
   const lastScore = getScoreTotal(lastQualifier, 'scores');
-  const lastCarreau = getScoreCarreauCount(lastQualifier, 'scores');
-  const lastReussi = getScoreReussiCount(lastQualifier, 'scores');
-
-  const lastTbScores = [];
-  for (let i = 1; i <= tiebreakerCount; i++) {
-    const tbKey = getTiebreakerKey(i);
-    lastTbScores.push(
-      getScoreTotal(lastQualifier, tbKey),
-      getScoreCarreauCount(lastQualifier, tbKey),
-      getScoreReussiCount(lastQualifier, tbKey),
-    );
-  }
 
   const extraQualifiers = [];
   for (let i = r2EndPosition; i < ranked.length; i++) {
     const p = ranked[i];
     if (getScoreTotal(p, 'scores') !== lastScore) break;
-    if (getScoreCarreauCount(p, 'scores') !== lastCarreau) break;
-    if (getScoreReussiCount(p, 'scores') !== lastReussi) break;
-    let tied = true;
-    for (let j = 0; j < lastTbScores.length; j += 3) {
-      const tbKey = getTiebreakerKey(Math.floor(j / 3) + 1);
-      if (getScoreTotal(p, tbKey) !== lastTbScores[j]) {
-        tied = false;
-        break;
-      }
-      if (getScoreCarreauCount(p, tbKey) !== lastTbScores[j + 1]) {
-        tied = false;
-        break;
-      }
-      if (getScoreReussiCount(p, tbKey) !== lastTbScores[j + 2]) {
-        tied = false;
-        break;
-      }
-    }
-    if (!tied) break;
     extraQualifiers.push(p);
   }
 

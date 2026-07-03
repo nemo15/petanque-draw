@@ -318,6 +318,28 @@ describe('getR2QualifiersWithTies', () => {
     const qualifiers = getR2QualifiersWithTies(participants, 0);
     expect(qualifiers).toHaveLength(11);
   });
+
+  it('includes players with same total score but different shot compositions', () => {
+    const participants = [];
+    for (let i = 0; i < 19; i++) {
+      participants.push({ id: `P${i}`, name: `P${i}`, scores: { 0: { 0: 'carreau', 1: 'carreau', 2: 'carreau', 3: 'carreau' } } });
+    }
+    // Position 20: score 9 via 1 carreau + 1 reussi + 1 touche (5+3+1)
+    participants.push({ id: 'P19', name: 'P19', scores: { 0: { 0: 'carreau', 1: 'reussi', 2: 'touche' } } });
+    // Position 21: score 9 via 3 reussi (3+3+3)
+    participants.push({ id: 'P20', name: 'P20', scores: { 0: { 0: 'reussi', 1: 'reussi', 2: 'reussi' } } });
+    // Position 22: score 9 via 1 reussi + 6 touche (3+1+1+1+1+1+1)
+    participants.push({ id: 'P21', name: 'P21', scores: { 0: { 0: 'reussi', 1: 'touche', 2: 'touche', 3: 'touche', 4: 'touche', 5: 'touche', 6: 'touche' } } });
+    // Position 23: score 5 — should NOT qualify
+    participants.push({ id: 'P22', name: 'P22', scores: { 0: { 0: 'carreau' } } });
+    const qualifiers = getR2QualifiersWithTies(participants, 0);
+    const ids = qualifiers.map((p) => p.id);
+    expect(ids).toContain('P19');
+    expect(ids).toContain('P20');
+    expect(ids).toContain('P21');
+    expect(ids).not.toContain('P22');
+    expect(qualifiers).toHaveLength(18);
+  });
 });
 
 describe('generateSeededBracket', () => {
