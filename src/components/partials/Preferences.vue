@@ -371,6 +371,9 @@ export default {
 }
 
 .prefs__btn--danger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
   background: transparent;
   border: 1px solid var(--color-error);
   color: var(--color-error);
